@@ -1,97 +1,66 @@
-# Circuit · Programació 26-27
+# Portada i tema dels apunts de Programació
 
-Apunts de M0485 Programació (1r DAMvi i DAW, Institut Sabadell).
-Web pública: <https://programacio-26-27.github.io/>
+Aquest repo fa dues coses:
 
-El repo és **privat** (l'organització té GitHub Team gràcies al compte de professora):
-el codi font no el veu ningú, però el web és públic. Cada `push` a `main` compila i publica
-el web automàticament.
+1. Publica la portada a <https://programacio-26-27.github.io/>.
+2. Defineix l'aspecte comú de tots els apunts (carpetes `_layouts`, `_includes` i `assets`). Si canvies el disseny aquí, canvia a totes les BA.
 
-## Posada en marxa (un sol cop)
+Funciona igual que el de Bases de dades. La marca és **Circuit** (asfalt, vorada vermella i blanca i groc bandera) i el fil comú del curs és el projecte **Turbo**.
 
-1. Comprova que l'organització `programacio-26-27` té el pla **GitHub Team**
-   (Settings > Billing and plans). Si surt Free, aplica-hi el benefici de professora
-   igual que vas fer amb `bases-de-dades-26-27`.
-2. Crea el repo **privat** `programacio-26-27.github.io` i puja-hi tot el contingut d'aquesta
-   carpeta, inclosa la carpeta oculta `.github`.
-3. Settings > Pages > Build and deployment > Source: **GitHub Actions**.
-   Si hi ha l'opció de visibilitat, deixa-la en **Public**.
-4. Pestanya **Actions**: quan "Publica el web" acabi en verd, el web és a
-   <https://programacio-26-27.github.io/>.
+## Editar la portada
 
-## Estructura
+- Nom, curs, mòdul i institut: `_config.yml`.
+- Llista de blocs: `_data/blocs.yml`. Per obrir una BA, posa l'adreça del seu repo a `url` (per exemple `url: /funcions/`). Si `url` està buit, surt com a "Properament". Si `ra` està buit, surt un guió.
+- Les etapes del Turbo de la portada: secció `fil` de `_layouts/portada.html`.
 
-```
-docs/
-  index.md                 Portada amb el mapa del circuit
-  turbo/index.md           El projecte fil comú
-  etapes/                  Una pàgina per etapa
-  interactius/             Els HTML interactius (presentacions i simuladors)
-  esborranys/              NO es publica
-  assets/logo.svg          Logo
-  stylesheets/circuit.css  Identitat visual
-mkdocs.yml                 Configuració i menú
+## Afegir una BA nova
+
+1. Crea un repo privat a l'organització (per exemple `funcions`) amb un `README.md` que faci d'índex i els apunts a `teoria/`.
+2. Copia-hi el `_config.yml` de la carpeta `plantilla-ba` i canvia-hi les dades del bloc.
+3. Al repo nou: `Settings > Pages > Deploy from a branch`, branca `main`, carpeta `/ (root)`.
+4. A `_data/blocs.yml` d'aquest repo, posa `url: /funcions/` a la BA corresponent.
+
+## Blocs especials dins dels apunts
+
+Fitxa a l'inici d'un tema (llista amb la classe `fitxa`):
+
+```markdown
+- **Tema** 4.1
+- **Al Turbo** temps de volta
+{: .fitxa}
 ```
 
-## Afegir una etapa nova
+"Al Turbo" (groc) i "Repte" (vermell): una cita amb la classe a sota.
 
-1. Si hi ha interactiu, copia l'HTML a `docs/interactius/` (per exemple `funcions.html`).
-2. Crea `docs/etapes/04-funcions.md` amb la plantilla de sota.
-3. Afegeix-la al menú a `mkdocs.yml`, dins de `nav > Etapes`.
-4. A `docs/index.md`, a l'etapa 04: canvia `class="propera"` per `class="feta"`,
-   el `<div class="etapa">` per `<a class="etapa" href="etapes/04-funcions/">` (i el `</div>` per `</a>`)
-   i l'estat a `Disponible`.
+```markdown
+> **Al Turbo**
+>
+> Text i codi...
+{: .turbo}
 
-Mentre una pàgina no estigui llesta, deixa-la a `docs/esborranys/`.
-
-Per veure-ho en local abans de pujar-ho:
-
-```bash
-pip install -r requirements.txt
-mkdocs serve        # http://127.0.0.1:8000
+> **Repte**
+>
+> 1. Exercici
+{: .repte}
 ```
 
-## Plantilla d'etapa
+Interactiu incrustat (un HTML a la carpeta `interactius/` del repo de la BA). Per a presentacions 16:9, afegeix la classe `diapos`. Posa `ample: true` al front matter perquè ocupi més amplada.
 
-````markdown
----
-hide:
-  - toc
-title: "04 · Funcions"
----
-
-# Funcions
-
-<div class="fitxa">
-  <span><b>Etapa</b> 04</span>
-  <span><b>Al Turbo</b> què hi afegim</span>
-  <span><b>Prerequisits</b> Fonaments, Arrays, Strings</span>
-</div>
-
-Una o dues frases sobre què es veu a l'etapa.
-
+```html
 <div class="interactiu">
-  <div class="interactiu__barra">
-    <span class="interactiu__titol">Simulador pas a pas</span>
-    <a class="interactiu__obrir" href="../../interactius/funcions.html" target="_blank" rel="noopener">Pantalla completa</a>
+  <div class="interactiu-barra">
+    <span class="interactiu-titol">Simulador pas a pas</span>
+    <a class="interactiu-obrir" href="../interactius/arrays.html" target="_blank" rel="noopener">Pantalla completa</a>
   </div>
-  <iframe class="interactiu__marc" src="../../interactius/funcions.html" title="Funcions" loading="lazy"></iframe>
+  <iframe src="../interactius/arrays.html" title="Arrays en Java" loading="lazy"></iframe>
 </div>
+```
 
-!!! turbo "Al Turbo"
+## Consells per als fitxers .md
 
-    Com fem servir el concepte al projecte.
+GitHub Pages és més estricte que la vista de GitHub:
 
-!!! repte "Repte"
-
-    1. Exercici
-````
-
-- Per a presentacions en format 16:9, afegeix `interactiu__marc--169` a la classe de l'`iframe`.
-- Blocs disponibles: `turbo` (groc), `boxes` (blau, per a errors típics), `repte` (vermell),
-  i els estàndard (`note`, `tip`, `warning`...). Amb `???` en lloc de `!!!` el bloc surt plegat.
-
-## No pugis al repo
-
-Res que no vulguis que vegin els alumnes **dins de `docs/`** fora d'`esborranys/`
-(solucions, exàmens...). Tot el que es publica es pot llegir amb "Veure codi font" del navegador.
+- Deixa sempre una línia en blanc abans i després de cada taula.
+- Deixa una línia en blanc abans de `---` (si no, el text de sobre es converteix en títol).
+- Deixa una línia en blanc abans de `<!--` quan amaguis temes de l'índex.
+- Si un bloc de codi conté `{{` o `{%`, envolta'l amb `{% raw %}` i `{% endraw %}`.

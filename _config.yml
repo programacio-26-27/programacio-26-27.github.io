@@ -1,0 +1,15 @@
+# Portada de l'organització i tema comú per a totes les BA de Programació.
+# Els repos de cada BA fan servir aquest repo com a tema (remote_theme).
+
+title: Programació
+marca: Circuit
+professora: Clàudia Reina
+curs: 2026-27
+modul: M0485
+cicle: DAMvi i DAW
+institut: Institut Sabadell
+lang: ca
+
+exclude:
+  - README.md
+  - plantilla-ba

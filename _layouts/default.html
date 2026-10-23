@@ -1,0 +1,45 @@
+<!doctype html>
+{%- assign portada = "https://programacio-26-27.github.io/" -%}
+{%- assign professora = site.professora | default: "Clàudia Reina" -%}
+{%- assign curs = site.curs | default: "2026-27" -%}
+{%- assign es_index = false -%}
+{%- if page.url == "/" or page.url == "/index.html" -%}{%- assign es_index = true -%}{%- endif -%}
+<html lang="{{ site.lang | default: 'ca' }}">
+<head>
+{% include head.html %}
+<title>{% if es_index %}{{ site.ba }}. {{ site.ba_nom }}{% else %}{{ page.title | strip_html }}, {{ site.ba }}{% endif %} | Programació</title>
+</head>
+<body class="ba{% if es_index %} ba-index{% endif %}">
+
+<nav class="barra" aria-label="Navegació">
+  <a class="barra-marca" href="{{ portada }}">
+    <img src="{{ '/assets/img/icona.svg' | relative_url }}" alt="" width="28" height="28">
+    <span>Programació</span>
+  </a>
+  {% unless es_index %}
+  <a class="barra-ba" href="{{ '/' | relative_url }}">{{ site.ba }}<span class="barra-ba-nom">. {{ site.ba_nom }}</span></a>
+  {% endunless %}
+</nav>
+
+{% if es_index %}
+<header class="ba-cap">
+  <div class="ba-cap-in">
+    <p class="ba-codi">{{ site.ba }}</p>
+    <h1 class="ba-nom">{{ site.ba_nom }}</h1>
+    {% if site.ba_hores %}<p class="ba-meta">{% if site.ba_ra %}{{ site.ba_ra }}, {% endif %}{{ site.ba_hores }} hores</p>{% endif %}
+  </div>
+</header>
+{% endif %}
+
+<main class="apunt{% if es_index %} index{% endif %}{% if page.ample %} ample{% endif %}">
+{{ content }}
+{% unless es_index %}
+  <p class="tornar"><a href="{{ '/' | relative_url }}">Tornar a l'índex de {{ site.ba }}</a></p>
+{% endunless %}
+</main>
+
+<footer class="peu">
+  <p>{{ professora }}, Institut Sabadell, curs {{ curs }}. <a href="{{ portada }}">Tots els blocs</a></p>
+</footer>
+</body>
+</html>

@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="{{ site.lang | default: 'ca' }}">
+<head>
+{% include head.html %}
+<title>{{ site.title }}, {{ site.cicle }} {{ site.curs }}</title>
+<meta name="description" content="Apunts de {{ site.title }} ({{ site.modul }}, {{ site.cicle }}) de {{ site.professora }}, {{ site.institut }}, curs {{ site.curs }}.">
+</head>
+<body class="portada">
+
+<header class="hero">
+  <div class="hero-in">
+    <img class="hero-icona" src="{{ '/assets/img/icona.svg' | relative_url }}" alt="" width="96" height="96">
+    <p class="hero-marca">{{ site.marca }}</p>
+    <h1 class="hero-titol">{{ site.title }}</h1>
+    <dl class="hero-dades">
+      <div><dt>Professora:</dt><dd>{{ site.professora }}</dd></div>
+      <div><dt>Curs:</dt><dd>{{ site.curs }}</dd></div>
+    </dl>
+    <p class="hero-modul">{{ site.modul }}, cicles {{ site.cicle }}, {{ site.institut }}</p>
+  </div>
+</header>
+
+<main class="blocs">
+  {% assign total = 0 %}
+  {% for b in site.data.blocs %}{% assign total = total | plus: b.hores %}{% endfor %}
+  <h2 class="blocs-titol">Blocs d'aprenentatge</h2>
+  <p class="consulta" aria-hidden="true"><span class="prompt">jshell&gt;</span> {{ site.modul }}.blocs()<span class="cursor"></span></p>
+
+  <table class="resultat">
+    <thead>
+      <tr><th scope="col">BA</th><th scope="col">Bloc</th><th scope="col">RA</th><th scope="col" class="num">Hores</th><th scope="col"><span class="sr">Estat</span></th></tr>
+    </thead>
+    <tbody>
+    {% for b in site.data.blocs %}
+      {% if b.url and b.url != "" %}
+      <tr class="obert" style="--i: {{ forloop.index }}">
+        <td class="ba">{{ b.ba }}</td>
+        <td class="nom"><a href="{{ b.url | relative_url }}">{{ b.nom }}</a></td>
+        <td class="ra">{{ b.ra | default: "—" }}</td>
+        <td class="num">{{ b.hores }} h</td>
+        <td class="estat"><span class="pastilla">Obrir apunts</span></td>
+      </tr>
+      {% else %}
+      <tr class="tancat" style="--i: {{ forloop.index }}">
+        <td class="ba">{{ b.ba }}</td>
+        <td class="nom">{{ b.nom }}</td>
+        <td class="ra">{{ b.ra | default: "—" }}</td>
+        <td class="num">{{ b.hores }} h</td>
+        <td class="estat">Properament</td>
+      </tr>
+      {% endif %}
+    {% endfor %}
+    </tbody>
+  </table>
+  <p class="peu-consulta">$1 ==> {{ site.data.blocs | size }} blocs, {{ total }} hores en total</p>
+
+  <section class="fil">
+    <h2 class="blocs-titol">El fil comú: Turbo</h2>
+    <p>Al llarg del curs construïm un mateix projecte: <strong>Turbo</strong>, un joc de curses per consola en Java. A cada tema aprenem un concepte nou i hi afegim una peça.</p>
+    <ol class="fil-etapes">
+      <li><span>Fonaments</span> les dades del pilot i del cotxe, i quan cal entrar a boxes</li>
+      <li><span>Arrays</span> els temps de cada volta i la volta ràpida</li>
+      <li><span>Strings</span> matrícules i abreviatures de pilot</li>
+      <li class="propera"><span>Funcions</span> el programa dividit en peces</li>
+      <li class="propera"><span>Objectes</span> les classes Cotxe, Pilot i Cursa</li>
+    </ol>
+  </section>
+</main>
+
+<footer class="peu">
+  <p>{{ site.professora }}, {{ site.institut }}, curs {{ site.curs }}</p>
+</footer>
+</body>
+</html>

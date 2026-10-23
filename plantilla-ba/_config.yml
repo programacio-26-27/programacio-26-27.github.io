@@ -1,0 +1,11 @@
+# Aspecte comú de tots els apunts (es defineix al repo de la portada)
+remote_theme: programacio-26-27/programacio-26-27.github.io
+plugins:
+  - jekyll-remote-theme
+
+# Dades d'aquest bloc
+ba: BA2
+ba_nom: Programació modular i proves
+ba_ra:
+ba_hores: 30
+lang: ca

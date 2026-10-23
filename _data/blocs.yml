@@ -1,0 +1,28 @@
+# Blocs d'aprenentatge de la portada.
+# Quan publiquis una BA nova, posa-hi l'adreça del seu repo a "url"
+# (per exemple: /funcions/). Si "url" està buit, surt com a "Properament".
+# Si "ra" està buit, surt un guió.
+
+- ba: BA1
+  nom: Fonaments i estructures de dades
+  ra:
+  hores: 65
+  url: /fonaments/
+
+- ba: BA2
+  nom: Programació modular i proves
+  ra:
+  hores: 30
+  url:
+
+- ba: BA3
+  nom: Fitxers, XML i JSON
+  ra:
+  hores: 40
+  url:
+
+- ba: BA4
+  nom: Programació orientada a objectes
+  ra:
+  hores: 63
+  url:
