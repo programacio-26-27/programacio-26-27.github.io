@@ -1,0 +1,678 @@
+<!doctype html>
+<html lang="ca">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Arrays en Java</title>
+<style>
+:root{
+  --bg:#f6f5f1; --surface:#ffffff; --ink:#1c1c1f; --muted:#66666e; --line:#e3e1d9;
+  --accent:#2952c8; --accent-soft:#e3eaff;
+  --amber:#9a6200; --amber-soft:#fff0c7;
+  --green:#18794a; --green-soft:#dcf2e5;
+  --red:#c42b2b; --red-soft:#fde3e3;
+  --code-bg:#1d2130; --code-ink:#e4e6ee; --code-muted:#6f7590; --code-run:#34436a; --code-next:#4a3d1c;
+  --box-bg:#fbfaf7;
+  --shadow:0 1px 2px rgba(0,0,0,.05),0 4px 16px rgba(0,0,0,.04);
+  --mono:ui-monospace,"SF Mono",Menlo,Consolas,"Liberation Mono",monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#131418; --surface:#1c1d23; --ink:#ececf1; --muted:#9a9ba6; --line:#2e2f38;
+    --accent:#86a2ff; --accent-soft:#232c4a;
+    --amber:#f0b84a; --amber-soft:#3a2f12;
+    --green:#5ccf8f; --green-soft:#16301f;
+    --red:#ff7b7b; --red-soft:#3a1a1a;
+    --code-bg:#0f1118; --box-bg:#23242b;
+    --shadow:none;
+  }
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font:16px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.wrap{max-width:1120px;margin:0 auto;padding:0 16px}
+code{font-family:var(--mono);font-size:.92em;background:var(--accent-soft);padding:.05em .35em;border-radius:4px}
+
+.top{padding:28px 0 12px}
+.eyebrow{margin:0;font-size:.8rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600}
+h1{margin:.15em 0 .3em;font-size:clamp(1.7rem,4vw,2.4rem);line-height:1.15}
+.lead{margin:0;max-width:62ch;color:var(--muted)}
+
+.tabs{display:flex;flex-wrap:wrap;gap:6px;padding-top:14px;padding-bottom:14px}
+.tab{font:inherit;font-size:.92rem;border:1px solid var(--line);background:var(--surface);color:var(--ink);
+  padding:6px 12px;border-radius:999px;cursor:pointer}
+.tab .n{color:var(--muted);margin-right:4px;font-variant-numeric:tabular-nums}
+.tab[aria-current="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.tab[aria-current="true"] .n{color:inherit;opacity:.7}
+
+.lesson-head h2{margin:8px 0 2px;font-size:1.35rem}
+.lesson-head p{margin:0 0 14px;color:var(--muted);max-width:70ch}
+
+.stage{display:grid;gap:14px;grid-template-columns:minmax(0,1fr)}
+@media (min-width:860px){.stage{grid-template-columns:minmax(0,1.05fr) minmax(0,1fr)}}
+.side{display:grid;gap:14px;align-content:start}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);min-width:0}
+.panel-title{font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;font-weight:700;color:var(--muted);padding:10px 14px 0}
+
+.code-panel{background:var(--code-bg);border-color:transparent}
+.code-panel .panel-title{color:var(--code-muted)}
+pre#code{margin:0;padding:10px 0 14px;overflow-x:auto;font:14px/1.7 var(--mono);color:var(--code-ink)}
+.ln{display:flex;padding:0 14px 0 0;border-left:3px solid transparent;white-space:pre}
+.ln .no{width:2.6em;flex:none;text-align:right;padding-right:14px;color:var(--code-muted);user-select:none}
+.ln.run{background:var(--code-run);border-left-color:#8fb0ff}
+.ln.next{background:var(--code-next);border-left-color:#f0b84a}
+.t-kw{color:#c792ea}.t-cls{color:#82cfff}.t-str{color:#c3e88d}.t-num{color:#f78c6c}.t-com{color:#7a819c;font-style:italic}
+
+#mem{padding:10px 14px 14px;display:grid;gap:16px}
+.empty{margin:0;color:var(--muted);font-size:.95rem}
+.arr-head{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px;margin-bottom:6px}
+.arr-name{font-family:var(--mono);font-weight:700}
+.arr-meta{font-family:var(--mono);font-size:.82rem;color:var(--muted)}
+.alias{font-size:.78rem;background:var(--red-soft);color:var(--red);padding:1px 8px;border-radius:999px;font-weight:600}
+.boxes{display:flex;gap:0;overflow-x:auto;padding:20px 2px 2px}
+.cell{display:flex;flex-direction:column;align-items:center;flex:none;position:relative}
+.box{min-width:3.1rem;height:2.7rem;padding:0 .45rem;display:flex;align-items:center;justify-content:center;
+  font:600 1rem var(--mono);background:var(--box-bg);border:2px solid var(--ink);margin-left:-2px;transition:background .2s}
+.cell:first-child .box{margin-left:0;border-radius:6px 0 0 6px}
+.cell.last .box{border-radius:0 6px 6px 0}
+.box.null{color:var(--muted);font-weight:400;font-style:italic}
+.idx{font:.8rem var(--mono);color:var(--muted);margin-top:4px}
+.ptr{position:absolute;top:-19px;font:700 .72rem var(--mono);padding:0 5px;border-radius:4px;white-space:nowrap}
+.ptr.i{background:var(--amber-soft);color:var(--amber)}
+.ptr.max{background:var(--green-soft);color:var(--green)}
+.box.m-i{background:var(--amber-soft);border-color:var(--amber);position:relative;z-index:1}
+.box.m-max{background:var(--green-soft);border-color:var(--green);position:relative;z-index:2}
+.box.m-get{background:var(--accent-soft);border-color:var(--accent);position:relative;z-index:1}
+.box.m-src{background:var(--accent-soft);border-style:dashed}
+.box.m-chg{animation:flash .7s ease-out;background:var(--accent-soft)}
+.box.m-new{animation:pop .35s ease-out}
+.box.ghost{border-style:dashed;border-color:var(--red);color:var(--red);background:var(--red-soft)}
+@media (max-width:480px){.box{min-width:2.55rem;height:2.4rem;font-size:.92rem}}
+@keyframes flash{0%{background:var(--accent);color:#fff}100%{background:var(--accent-soft)}}
+@keyframes pop{0%{transform:scale(.6);opacity:0}100%{transform:scale(1);opacity:1}}
+@media (prefers-reduced-motion:reduce){.box.m-chg,.box.m-new{animation:none}}
+
+.vars{display:flex;flex-wrap:wrap;gap:8px}
+.var{font:600 .9rem var(--mono);border:1px solid var(--line);background:var(--box-bg);padding:4px 10px;border-radius:8px}
+.var .k{color:var(--muted);font-weight:400}
+
+.console{margin:8px 14px 14px;background:#0f1118;color:#d7dbe6;border-radius:8px;padding:10px 12px;
+  font:14px/1.6 var(--mono);min-height:3.2em;overflow-x:auto;white-space:pre}
+.console .in{color:#f0b84a}
+.console .err{color:#ff8a8a;white-space:pre-wrap;overflow-wrap:anywhere}
+.console .new{animation:fadein .4s}
+.console .none{color:#6f7590;font-style:italic}
+@keyframes fadein{from{opacity:0}to{opacity:1}}
+
+.explain{margin-top:14px;padding:14px 16px;border-left:4px solid var(--accent)}
+#note{max-width:75ch}
+#note p{margin:0}
+#quiz{margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid var(--line)}
+#quiz .q{font-weight:700;margin:0 0 10px}
+#quiz .tag{display:inline-block;font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;font-weight:700;
+  color:var(--amber);background:var(--amber-soft);padding:2px 8px;border-radius:999px;margin-bottom:8px}
+.opts{display:flex;flex-wrap:wrap;gap:8px}
+.opt{font:inherit;text-align:left;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);
+  padding:8px 14px;border-radius:8px;cursor:pointer}
+.opt:hover:not(:disabled){border-color:var(--accent)}
+.opt:disabled{cursor:default}
+.opt.ok{border-color:var(--green);background:var(--green-soft);color:var(--green);font-weight:600}
+.opt.ko{border-color:var(--red);background:var(--red-soft);color:var(--red);text-decoration:line-through}
+.verdict{margin:10px 0 0}
+.verdict b.ok{color:var(--green)} .verdict b.ko{color:var(--red)}
+
+.controls{position:sticky;bottom:0;z-index:5;margin:14px -16px 0;padding:12px 16px;background:var(--bg);
+  border-top:1px solid var(--line);display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+@media (min-width:860px){.controls{position:static;border-top:0;margin:14px 0 0;padding:0}}
+.btn{font:600 .95rem system-ui,sans-serif;border:1px solid var(--line);background:var(--surface);color:var(--ink);
+  padding:9px 16px;border-radius:8px;cursor:pointer}
+.btn:disabled{opacity:.4;cursor:default}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.counter{margin-left:auto;color:var(--muted);font-size:.9rem;font-variant-numeric:tabular-nums}
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:.82rem;color:var(--muted);margin:22px 0 40px}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.sw{width:14px;height:14px;border-radius:3px;border:2px solid}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <p class="eyebrow">Programació · Java</p>
+    <h1>Arrays en Java</h1>
+    <p class="lead">Cada tema és un tros de codi. Prem <b>Següent</b> per executar-lo línia a línia i mira què passa a la memòria. Quan surti una pregunta, respon abans de veure el resultat.</p>
+  </div>
+</header>
+
+<nav class="tabs wrap" id="tabs" aria-label="Temes"></nav>
+
+<main class="wrap">
+  <section class="lesson-head">
+    <h2 id="ltitle"></h2>
+    <p id="lidea"></p>
+  </section>
+
+  <div class="stage">
+    <div class="panel code-panel">
+      <div class="panel-title">Codi</div>
+      <pre id="code"></pre>
+    </div>
+    <div class="side">
+      <div class="panel">
+        <div class="panel-title">Memòria</div>
+        <div id="mem"></div>
+      </div>
+      <div class="panel">
+        <div class="panel-title">Consola</div>
+        <div id="out" class="console"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel explain" aria-live="polite">
+    <div id="quiz" hidden></div>
+    <div id="note"></div>
+  </div>
+
+  <div class="controls">
+    <button class="btn" id="bPrev">Anterior</button>
+    <button class="btn primary" id="bNext">Següent</button>
+    <button class="btn" id="bPlay">Reprodueix</button>
+    <button class="btn" id="bReset">Reinicia</button>
+    <span class="counter" id="counter"></span>
+  </div>
+
+  <div class="legend">
+    <span><i class="sw" style="background:var(--amber-soft);border-color:var(--amber)"></i>caixa on apunta la i</span>
+    <span><i class="sw" style="background:var(--accent-soft);border-color:var(--accent)"></i>caixa llegida o modificada</span>
+    <span><i class="sw" style="background:var(--green-soft);border-color:var(--green)"></i>posició guardada (posMax)</span>
+    <span><i class="sw" style="background:var(--red-soft);border-color:var(--red);border-style:dashed"></i>caixa que no existeix</span>
+  </div>
+</main>
+
+<script>
+/* ---------- estat i helpers ---------- */
+function blank(){ return {arrays:[], vars:{}, marks:[], out:[], err:null}; }
+function clone(s){ return JSON.parse(JSON.stringify(s)); }
+function A(s,name){ return s.arrays.find(function(a){return a.names.indexOf(name)>=0;}); }
+function mk(s,name,type,vals){ s.arrays.push({names:[name],type:type,vals:vals.slice()}); s.marks.push({a:name,all:true,k:'new'}); }
+function set(s,name,i,v){ A(s,name).vals[i]=v; s.marks.push({a:name,i:i,k:'chg'}); }
+function mark(s,name,i,k,label){ s.marks.push({a:name,i:i,k:k,label:label}); }
+function println(s,t,cls){ s.out.push({t:t,cls:cls||'',done:true}); }
+function print(s,t){ var l=s.out[s.out.length-1]; if(l && !l.done){ l.t+=t; } else { s.out.push({t:t,cls:'',done:false}); } }
+function endl(s){ var l=s.out[s.out.length-1]; if(l && !l.done){ l.done=true; } else { s.out.push({t:'',cls:'',done:true}); } }
+
+var T=[14,17,19,16,22,25,21];
+var D=['dl','dt','dc','dj','dv','ds','dg'];
+
+/* ---------- temes ---------- */
+var LESSONS=[];
+
+/* 1. CREAR */
+LESSONS.push({
+  tab:'Crear', title:'1. Crear un array',
+  idea:'Un array és una fila de caixes, totes del mateix tipus i amb una mida fixa. Cada caixa té un número: l’índex.',
+  code:[
+    'int[] temperatures = new int[7];',
+    'String[] noms = new String[3];',
+    'int[] notes = {7, 5, 9, 6};'
+  ],
+  start:'La memòria està buida. Prem <b>Següent</b> per executar la línia 1.',
+  steps:[
+    {l:0, q:{q:'Es creen 7 caixes per a enters i no hi posem res. Què hi haurà a dins?', o:['Res, estan buides','Un 0 a cada caixa','Números aleatoris'], ok:1,
+      w:'Java omple automàticament els <code>int</code> amb 0.'},
+      n:'<code>new int[7]</code> reserva 7 caixes. Els índexs van del <b>0 al 6</b>. La mida ja no es pot canviar.',
+      d:function(s){ mk(s,'temperatures','int',[0,0,0,0,0,0,0]); }},
+    {l:1, q:{q:'I si les caixes són de String?', o:['Un text buit ""','null','0'], ok:1,
+      w:'Els <code>String</code> comencen a <code>null</code>: vol dir que no hi ha cap text.'},
+      n:'Un array de <code>String</code> sense omplir conté <code>null</code> a cada caixa.',
+      d:function(s){ mk(s,'noms','String',[null,null,null]); }},
+    {l:2, q:{q:'Quant valdrà notes.length?', o:['3','4','9'], ok:1,
+      w:'Hi ha 4 valors entre claus. <code>length</code> compta caixes; l’últim índex és 3.'},
+      n:'Si ja saps els valors, els poses entre claus. Java compta les caixes per tu.',
+      d:function(s){ mk(s,'notes','int',[7,5,9,6]); }}
+  ]
+});
+
+/* 2. OMPLIR */
+(function(){
+  var steps=[
+    {l:0, n:'Creem 7 caixes, totes a 0.', d:function(s){ mk(s,'temperatures','int',[0,0,0,0,0,0,0]); }},
+    {l:1, n:'Entre claudàtors va la <b>posició</b>. A la posició 0 guardem un 14.', d:function(s){ set(s,'temperatures',0,14); }},
+    {l:2, n:'A la posició 1 guardem un 17.', d:function(s){ set(s,'temperatures',1,17); }},
+    {l:3, q:{q:'temperatures[6] = 21; On anirà el 21?', o:['A la caixa 6, que és l’última','A la sisena caixa (índex 5)','Enlloc: dona error'], ok:0,
+      w:'Els índexs van del 0 al 6, així que la posició 6 és la setena caixa: l’última.'},
+      n:'Les caixes que no hem tocat continuen a 0.', d:function(s){ set(s,'temperatures',6,21); }},
+    {l:[5,6], n:'Ara omplirem un altre array des del teclat. El patró sempre és el mateix: un <code>for</code> que va de 0 fins a <code>length</code>.',
+      d:function(s){ mk(s,'notes','int',[0,0,0,0]); }}
+  ];
+  var input=[7,5,9,6];
+  input.forEach(function(v,i){
+    steps.push({l:8,
+      n:'<code>i = '+i+'</code> → '+i+' &lt; 4 és <b>true</b>. L’usuari escriu '+v+' i es guarda a <code>notes['+i+']</code>.',
+      d:function(s){ s.vars.i=i; mark(s,'notes',i,'i','i'); println(s,'> '+v,'in'); set(s,'notes',i,v); }});
+  });
+  steps.push({l:7, q:{q:'Ara i val 4. Què passarà?', o:['Es demana un altre número','Surt del bucle','Error: la caixa 4 no existeix'], ok:1,
+      w:'4 &lt; 4 és <b>false</b>. El bucle s’atura just abans de sortir de l’array.'},
+    n:'Fixa’t que la condició fa servir <code>notes.length</code>, no un 4 escrit a mà. Si l’array canvia de mida, el bucle continua funcionant.',
+    d:function(s){ s.vars.i=4; }});
+  LESSONS.push({
+    tab:'Omplir', title:'2. Omplir un array',
+    idea:'Es pot omplir posició a posició o amb un bucle. Amb un bucle és com s’omple quasi sempre.',
+    code:[
+      'int[] temperatures = new int[7];',
+      'temperatures[0] = 14;',
+      'temperatures[1] = 17;',
+      'temperatures[6] = 21;',
+      '',
+      'Scanner sc = new Scanner(System.in);',
+      'int[] notes = new int[4];',
+      'for (int i = 0; i < notes.length; i++) {',
+      '    notes[i] = sc.nextInt();',
+      '}'
+    ],
+    start:'Prem <b>Següent</b> per començar.',
+    steps:steps
+  });
+})();
+
+/* 3. RECÓRRER */
+(function(){
+  var steps=[
+    {l:0, n:'Un array de text amb els dies de la setmana.', d:function(s){ mk(s,'dies','String',D); }},
+    {l:1, n:'I un altre amb una temperatura per a cada dia.', d:function(s){ mk(s,'temperatures','int',T); }}
+  ];
+  T.forEach(function(t,i){
+    var st={l:4,
+      n:'<code>i = '+i+'</code> → '+i+' &lt; 7 és <b>true</b>. Llegim <code>dies['+i+']</code> i <code>temperatures['+i+']</code>.',
+      d:function(s){ s.vars.i=i; mark(s,'dies',i,'i','i'); mark(s,'temperatures',i,'i','i'); println(s,D[i]+': '+t+' graus'); }};
+    if(i===0) st.q={q:'Per quina caixa comença la i?', o:['Per la 0','Per la 1'], ok:0, w:'La primera caixa d’un array sempre és la 0.'};
+    steps.push(st);
+  });
+  steps.push({l:3, n:'<code>i = 7</code> → 7 &lt; 7 és <b>false</b>. Sortim. Amb una sola <code>i</code> hem recorregut dos arrays alhora: van aparellats per posició.',
+    d:function(s){ s.vars.i=7; }});
+  LESSONS.push({
+    tab:'Recórrer', title:'3. Recórrer un array',
+    idea:'Recórrer vol dir passar per totes les caixes, una a una. La variable i és el dit que assenyala la caixa.',
+    code:[
+      'String[] dies = {"dl", "dt", "dc", "dj", "dv", "ds", "dg"};',
+      'int[] temperatures = {14, 17, 19, 16, 22, 25, 21};',
+      '',
+      'for (int i = 0; i < temperatures.length; i++) {',
+      '    System.out.println(dies[i] + ": " + temperatures[i] + " graus");',
+      '}'
+    ],
+    start:'Prem <b>Reprodueix</b> per veure el bucle sencer, o <b>Següent</b> per anar volta a volta.',
+    steps:steps
+  });
+})();
+
+/* 4. OBTENIR */
+(function(){
+  var steps=[
+    {l:0, n:'Partim de les temperatures de la setmana.', d:function(s){ mk(s,'temperatures','int',T); }},
+    {l:2, q:{q:'Quant valdrà dimecres?', o:['17','19','16'], ok:1, w:'Es compta des del 0: posició 0 → 14, posició 1 → 17, posició 2 → 19.'},
+      n:'Per <b>obtenir</b> un valor posem el nom de l’array i la posició entre claudàtors.',
+      d:function(s){ s.vars.dimecres=19; mark(s,'temperatures',2,'get'); }},
+    {l:3, q:{q:'Quant valdrà ultima?', o:['21','25','Error: no hi ha caixa 7'], ok:0, w:'<code>length</code> és 7, i 7 - 1 = 6. A la caixa 6 hi ha 21.'},
+      n:'<code>length - 1</code> sempre és l’última posició, sigui quina sigui la mida.',
+      d:function(s){ s.vars.ultima=21; mark(s,'temperatures',6,'get'); }},
+    {l:5, n:'Volem el dia més calorós. Suposem que és el primer i guardem la seva <b>posició</b> (0), no el valor.',
+      d:function(s){ s.vars.posMax=0; mark(s,'temperatures',0,'max','posMax'); }}
+  ];
+  var pm=0;
+  for(var i=1;i<T.length;i++){
+    (function(i,prev){
+      var bigger=T[i]>T[prev];
+      var now=bigger?i:prev;
+      var st={l:bigger?[7,8]:7,
+        n:'<code>i = '+i+'</code>: '+T[i]+' &gt; '+T[prev]+'? <b>'+(bigger?'sí':'no')+'</b> → '+(bigger?'<code>posMax = '+i+'</code>':'posMax es queda a '+prev)+(i===1?'. Comencem a la 1 perquè la 0 ja és la candidata.':'.'),
+        d:function(s){ s.vars.i=i; s.vars.posMax=now; mark(s,'temperatures',i,'i','i'); mark(s,'temperatures',now,'max','posMax'); }};
+      if(i===3) st.q={q:'Ara i = 3 (16 graus) i posMax = 2 (19 graus). Canviarà posMax?', o:['Sí','No'], ok:1, w:'16 no és més gran que 19, així que no entrem a l’if.'};
+      steps.push(st);
+      pm=now;
+    })(i,pm);
+  }
+  steps.push({l:10, n:'Resultat: <code>posMax = 5</code>. Amb la posició ho tenim tot: <code>temperatures[5]</code> = 25 graus i <code>dies[5]</code> = dissabte. Si només haguéssim guardat el 25, no sabríem quin dia era.',
+    d:function(s){ delete s.vars.i; mark(s,'temperatures',5,'max','posMax'); }});
+  LESSONS.push({
+    tab:'Obtenir', title:'4. Obtenir valors',
+    idea:'Llegir una caixa concreta, l’última, o buscar-ne una recorrent l’array.',
+    code:[
+      'int[] temperatures = {14, 17, 19, 16, 22, 25, 21};',
+      '',
+      'int dimecres = temperatures[2];',
+      'int ultima = temperatures[temperatures.length - 1];',
+      '',
+      'int posMax = 0;',
+      'for (int i = 1; i < temperatures.length; i++) {',
+      '    if (temperatures[i] > temperatures[posMax]) {',
+      '        posMax = i;',
+      '    }',
+      '}'
+    ],
+    start:'Prem <b>Següent</b> per començar.',
+    steps:steps
+  });
+})();
+
+/* 5. MODIFICAR */
+(function(){
+  var cur=T.slice(); cur[0]=20;
+  var steps=[
+    {l:0, n:'Partim de les temperatures de la setmana.', d:function(s){ mk(s,'temperatures','int',T); }},
+    {l:2, q:{q:'Què li passa al 14 que hi havia a la caixa 0?', o:['Desapareix: ara hi ha un 20','Se suma: ara hi ha 34','Es mou a la caixa 1'], ok:0,
+      w:'Una caixa només guarda un valor. El nou substitueix el vell.'},
+      n:'Per <b>modificar</b> una caixa, li assignem un valor nou.', d:function(s){ set(s,'temperatures',0,20); }}
+  ];
+  cur.forEach(function(v,i){
+    var st={l:5,
+      n:'<code>i = '+i+'</code>: llegeix '+v+', hi suma 2 i guarda '+(v+2)+' a la <b>mateixa</b> caixa.',
+      d:function(s){ s.vars.i=i; mark(s,'temperatures',i,'i','i'); set(s,'temperatures',i,v+2); }};
+    if(i===1) st.q={q:'Què quedarà a temperatures[1]?', o:['17','19','2'], ok:1, w:'Primer es calcula la dreta (17 + 2) i després es guarda a l’esquerra.'};
+    steps.push(st);
+  });
+  steps.push({l:4, n:'<code>i = 7</code> → sortim. Totes les caixes han pujat 2 graus. Aquest patró (llegir, calcular, tornar a guardar) serveix per a qualsevol canvi massiu.',
+    d:function(s){ s.vars.i=7; }});
+  LESSONS.push({
+    tab:'Modificar', title:'5. Modificar valors',
+    idea:'Canviar una caixa concreta o totes alhora amb un bucle.',
+    code:[
+      'int[] temperatures = {14, 17, 19, 16, 22, 25, 21};',
+      '',
+      'temperatures[0] = 20;',
+      '',
+      'for (int i = 0; i < temperatures.length; i++) {',
+      '    temperatures[i] = temperatures[i] + 2;',
+      '}'
+    ],
+    start:'Prem <b>Següent</b> per començar.',
+    steps:steps
+  });
+})();
+
+/* 6. PRINTAR */
+(function(){
+  var steps=[
+    {l:0, n:'Per fer servir la classe <code>Arrays</code> s’ha d’importar a dalt de tot del fitxer.', d:function(s){}},
+    {l:2, n:'Partim de les temperatures de la setmana.', d:function(s){ mk(s,'temperatures','int',T); }},
+    {l:4, q:{q:'Què escriurà System.out.println(temperatures)?', o:['14 17 19 16 22 25 21','[14, 17, 19, 16, 22, 25, 21]','Una cosa estranya com [I@1b6d3586'], ok:2,
+      w:'L’array no es pot imprimir directament.'},
+      n:'<code>[I@1b6d3586</code> no és el contingut: <code>[I</code> vol dir “array d’int” i la resta és l’adreça de memòria.',
+      d:function(s){ println(s,'[I@1b6d3586'); }},
+    {l:5, n:'<code>Arrays.toString()</code> converteix l’array en un text llegible. És la manera ràpida de veure’l.',
+      d:function(s){ println(s,'[14, 17, 19, 16, 22, 25, 21]'); }}
+  ];
+  T.forEach(function(t,i){
+    var st={l:8, n:'<code>i = '+i+'</code>: <code>print</code> escriu '+t+' i un espai, <b>sense</b> saltar de línia.',
+      d:function(s){ s.vars.i=i; mark(s,'temperatures',i,'i','i'); print(s,t+' '); }};
+    if(i===0) st.q={q:'Com sortirà el bucle a la consola?', o:['7 línies, un número a cada una','Tot en una sola línia'], ok:1,
+      w:'<code>print</code> no salta de línia; <code>println</code> sí.'};
+    steps.push(st);
+  });
+  steps.push({l:10, n:'El <code>println()</code> buit tanca la línia. Amb el bucle podem decidir el format (separadors, text, etc.); amb <code>toString</code>, no.',
+    d:function(s){ delete s.vars.i; endl(s); }});
+  LESSONS.push({
+    tab:'Printar', title:'6. Printar un array',
+    idea:'Tres maneres d’escriure un array per pantalla. Només dues funcionen.',
+    code:[
+      'import java.util.Arrays;',
+      '',
+      'int[] temperatures = {14, 17, 19, 16, 22, 25, 21};',
+      '',
+      'System.out.println(temperatures);',
+      'System.out.println(Arrays.toString(temperatures));',
+      '',
+      'for (int i = 0; i < temperatures.length; i++) {',
+      '    System.out.print(temperatures[i] + " ");',
+      '}',
+      'System.out.println();'
+    ],
+    start:'Prem <b>Següent</b> per començar.',
+    steps:steps
+  });
+})();
+
+/* 7. CLASSE ARRAYS */
+LESSONS.push({
+  tab:'Classe Arrays', title:'7. Eines de la classe Arrays',
+  idea:'Java ja porta fetes les operacions més habituals. Cal <code>import java.util.Arrays;</code>',
+  code:[
+    'int[] notes = {7, 3, 9, 5, 10};',
+    '',
+    'Arrays.sort(notes);',
+    'int pos = Arrays.binarySearch(notes, 9);',
+    '',
+    'int[] plantilla = new int[5];',
+    'Arrays.fill(plantilla, 5);',
+    '',
+    'int[] primeres = Arrays.copyOf(notes, 3);',
+    'int[] delMig = Arrays.copyOfRange(notes, 1, 4);',
+    'boolean iguals = Arrays.equals(notes, primeres);'
+  ],
+  start:'Prem <b>Següent</b> per començar.',
+  steps:[
+    {l:0, n:'Unes notes desordenades.', d:function(s){ mk(s,'notes','int',[7,3,9,5,10]); }},
+    {l:2, q:{q:'Com quedarà notes?', o:['3  5  7  9  10','10  9  7  5  3','Igual: sort crea un array nou'], ok:0,
+      w:'<code>sort</code> ordena de petit a gran i modifica el mateix array.'},
+      n:'<code>sort</code> ordena l’array original. L’ordre d’abans es perd.',
+      d:function(s){ [3,5,7,9,10].forEach(function(v,i){ set(s,'notes',i,v); }); }},
+    {l:3, q:{q:'Quant valdrà pos?', o:['9','3','4'], ok:1, w:'Retorna la <b>posició</b> on és el 9, no el valor.'},
+      n:'<code>binarySearch</code> només funciona amb l’array <b>ordenat</b>. Si el valor no hi és, retorna un número negatiu.',
+      d:function(s){ s.vars.pos=3; mark(s,'notes',3,'get'); }},
+    {l:5, n:'Un array nou de 5 caixes, a 0.', d:function(s){ mk(s,'plantilla','int',[0,0,0,0,0]); }},
+    {l:6, n:'<code>fill</code> posa el mateix valor a totes les caixes.', d:function(s){ for(var i=0;i<5;i++) set(s,'plantilla',i,5); }},
+    {l:8, n:'<code>copyOf(notes, 3)</code> crea un array <b>nou</b> amb les 3 primeres caixes.',
+      d:function(s){ for(var i=0;i<3;i++) mark(s,'notes',i,'src'); mk(s,'primeres','int',[3,5,7]); }},
+    {l:9, q:{q:'copyOfRange(notes, 1, 4): quines posicions copia?', o:['1, 2, 3 i 4','1, 2 i 3','2, 3 i 4'], ok:1,
+      w:'L’inici s’inclou i el final <b>no</b>.'},
+      n:'Copia de la posició 1 a la 3. El 4 marca on s’atura, però no s’agafa.',
+      d:function(s){ for(var i=1;i<4;i++) mark(s,'notes',i,'src'); mk(s,'delMig','int',[5,7,9]); }},
+    {l:10, q:{q:'Quant valdrà iguals?', o:['true','false'], ok:1, w:'Per ser iguals han de tenir la mateixa mida i els mateixos valors a cada posició.'},
+      n:'<code>Arrays.equals</code> compara el contingut, caixa per caixa.',
+      d:function(s){ s.vars.iguals=false; }}
+  ]
+});
+
+/* 8. TRAMPES */
+LESSONS.push({
+  tab:'Trampes', title:'8. Tres trampes típiques',
+  idea:'Errors que tothom fa la primera vegada. Millor fer-los aquí.',
+  code:[
+    'int[] temperatures = new int[7];',
+    'temperatures[7] = 30;',
+    '',
+    'int[] a = {1, 2, 3};',
+    'int[] b = {1, 2, 3};',
+    'boolean iguals = (a == b);',
+    'boolean igualsContingut = Arrays.equals(a, b);',
+    '',
+    'int[] c = a;',
+    'c[0] = 99;'
+  ],
+  start:'Prem <b>Següent</b> per començar.',
+  steps:[
+    {l:0, n:'7 caixes, de la 0 a la 6.', d:function(s){ mk(s,'temperatures','int',[0,0,0,0,0,0,0]); }},
+    {l:1, q:{q:'temperatures[7] = 30; Què passarà?', o:['Es guarda a l’última caixa','Error: la caixa 7 no existeix','L’array creix fins a 8 caixes'], ok:1,
+      w:'Un array no creix mai. La caixa 7 no existeix.'},
+      n:'<b>Trampa 1.</b> El programa peta i s’atura. Llegeix el missatge: diu quin índex has fet servir i quina mida té l’array.',
+      d:function(s){ mark(s,'temperatures',7,'oob'); println(s,'Exception in thread "main" java.lang.ArrayIndexOutOfBoundsException: Index 7 out of bounds for length 7','err'); }},
+    {l:[3,4], n:'Imaginem que hem esborrat la línia 2 i continuem. Dos arrays amb el mateix contingut.',
+      d:function(s){ mk(s,'a','int',[1,2,3]); mk(s,'b','int',[1,2,3]); }},
+    {l:5, q:{q:'a i b tenen els mateixos valors. a == b dona...', o:['true','false'], ok:1,
+      w:'<code>==</code> no mira el contingut: mira si són <b>el mateix</b> array a la memòria. a i b són dos arrays diferents.'},
+      n:'<b>Trampa 2.</b> Per comparar arrays, mai <code>==</code>.', d:function(s){ s.vars.iguals=false; }},
+    {l:6, n:'<code>Arrays.equals</code> sí que compara el contingut.', d:function(s){ s.vars.igualsContingut=true; }},
+    {l:8, q:{q:'Què fa int[] c = a; ?', o:['Fa una còpia de a','c i a passen a ser el mateix array amb dos noms'], ok:1,
+      w:'No es crea cap caixa nova: <code>c</code> apunta al mateix array que <code>a</code>.'},
+      n:'<b>Trampa 3.</b> Ara aquest array té dos noms: <code>a</code> i <code>c</code>.',
+      d:function(s){ A(s,'a').names.push('c'); s.marks.push({a:'a',all:true,k:'get'}); }},
+    {l:9, q:{q:'Fem c[0] = 99. Quant val a[0]?', o:['1','99'], ok:1, w:'Com que és el mateix array, el canvi es veu pels dos noms.'},
+      n:'Per copiar de veritat: <code>int[] c = Arrays.copyOf(a, a.length);</code>',
+      d:function(s){ set(s,'c',0,99); }}
+  ]
+});
+
+/* ---------- precàlcul d'estats ---------- */
+LESSONS.forEach(function(L){
+  L.states=[blank()];
+  L.steps.forEach(function(st,k){
+    var s=clone(L.states[k]); s.marks=[]; s.out.forEach(function(o){ o.fresh=false; });
+    var before=s.out.length; var lastT=before?s.out[before-1].t:null;
+    st.d(s);
+    s.out.forEach(function(o,i){ if(i>=before || (i===before-1 && o.t!==lastT)) o.fresh=true; });
+    L.states.push(s);
+  });
+});
+
+/* ---------- interfície ---------- */
+if(typeof document!=='undefined'){
+  var $=function(id){ return document.getElementById(id); };
+  var cur=0, k=0, answered={}, asking=false, timer=null;
+
+  function esc(t){ return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  var KW={'int':1,'String':0,'boolean':1,'double':1,'new':1,'for':1,'if':1,'else':1,'import':1,'true':1,'false':1,'null':1};
+  function hl(line){
+    if(!line) return ' ';
+    var re=/("(?:[^"\\]|\\.)*")|(\/\/.*$)|(\b\d+\b)|([A-Za-z_]\w*)|(\s+)|([^\s\w"])/g, m, out='';
+    while((m=re.exec(line))){
+      if(m[1]) out+='<span class="t-str">'+esc(m[1])+'</span>';
+      else if(m[2]) out+='<span class="t-com">'+esc(m[2])+'</span>';
+      else if(m[3]) out+='<span class="t-num">'+m[3]+'</span>';
+      else if(m[4]){ var w=m[4]; out+= KW[w]===1?'<span class="t-kw">'+w+'</span>' : /^[A-Z]/.test(w)?'<span class="t-cls">'+w+'</span>' : w; }
+      else out+=esc(m[0]);
+    }
+    return out;
+  }
+  function lines(l){ return l===undefined?[]:(Array.isArray(l)?l:[l]); }
+
+  function renderTabs(){
+    var nav=$('tabs'); nav.innerHTML='';
+    LESSONS.forEach(function(L,i){
+      var b=document.createElement('button'); b.className='tab'; b.type='button';
+      b.innerHTML='<span class="n">'+(i+1)+'</span>'+L.tab;
+      b.setAttribute('aria-current', i===cur?'true':'false');
+      b.onclick=function(){ load(i); };
+      nav.appendChild(b);
+    });
+  }
+
+  function renderCode(){
+    var L=LESSONS[cur];
+    var run=k>0?lines(L.steps[k-1].l):[];
+    var next=asking?lines(L.steps[k].l):[];
+    $('code').innerHTML=L.code.map(function(c,i){
+      var cls=next.indexOf(i)>=0?'next':(run.indexOf(i)>=0?'run':'');
+      return '<div class="ln '+cls+'"><span class="no">'+(i+1)+'</span><span>'+hl(c)+'</span></div>';
+    }).join('');
+  }
+
+  function renderMem(s){
+    var mem=$('mem'); mem.innerHTML='';
+    if(!s.arrays.length && !Object.keys(s.vars).length){ mem.innerHTML='<p class="empty">Encara no hi ha res a la memòria.</p>'; return; }
+    s.arrays.forEach(function(a){
+      var w=document.createElement('div');
+      var head='<div class="arr-head"><span class="arr-name">'+a.names.join(' = ')+'</span><span class="arr-meta">'+a.type+'[ ] · length = '+a.vals.length+'</span>';
+      if(a.names.length>1) head+='<span class="alias">dos noms, un sol array</span>';
+      w.innerHTML=head+'</div>';
+      var row=document.createElement('div'); row.className='boxes';
+      var ms=s.marks.filter(function(m){ return a.names.indexOf(m.a)>=0; });
+      var total=a.vals.length;
+      ms.forEach(function(m){ if(m.k==='oob') total=Math.max(total,m.i+1); });
+      for(var i=0;i<total;i++){
+        var cell=document.createElement('div'); cell.className='cell'+(i===total-1?' last':'');
+        var box=document.createElement('div'); box.className='box';
+        if(i>=a.vals.length){ box.classList.add('ghost'); box.textContent='?'; }
+        else{ var v=a.vals[i]; if(v===null){ box.textContent='null'; box.classList.add('null'); } else box.textContent= a.type==='String'?'"'+v+'"':v; }
+        var labels=[];
+        ms.forEach(function(m){ if(m.all || m.i===i){ box.classList.add('m-'+m.k); if(m.label) labels.push(m); } });
+        labels.forEach(function(m,j){ var p=document.createElement('span'); p.className='ptr '+m.k; p.textContent=m.label; if(j) p.style.top='-38px'; cell.appendChild(p); });
+        if(labels.length>1) row.style.paddingTop='38px';
+        var idx=document.createElement('div'); idx.className='idx'; idx.textContent=i;
+        cell.appendChild(box); cell.appendChild(idx); row.appendChild(cell);
+      }
+      w.appendChild(row); mem.appendChild(w);
+    });
+    var keys=Object.keys(s.vars);
+    if(keys.length){
+      var vd=document.createElement('div'); vd.className='vars';
+      vd.innerHTML=keys.map(function(key){ return '<span class="var"><span class="k">'+key+' =</span> '+s.vars[key]+'</span>'; }).join('');
+      mem.appendChild(vd);
+    }
+  }
+
+  function renderOut(s){
+    var o=$('out');
+    if(!s.out.length){ o.innerHTML='<span class="none">(encara no s’ha escrit res)</span>'; return; }
+    o.innerHTML=s.out.map(function(l){ return '<div class="'+l.cls+(l.fresh?' new':'')+'">'+(esc(l.t)||' ')+'</div>'; }).join('');
+    o.scrollTop=o.scrollHeight;
+  }
+
+  function render(){
+    var L=LESSONS[cur], s=L.states[k];
+    renderCode(); renderMem(s); renderOut(s);
+    if(!asking){
+      var n = k===0 ? L.start : L.steps[k-1].n;
+      if(k===L.steps.length){
+        n+= cur<LESSONS.length-1 ? '<p style="margin-top:10px"><button class="btn primary" type="button" id="bNextLesson">Tema següent: '+LESSONS[cur+1].tab+'</button></p>'
+                                 : '<p style="margin-top:10px"><b>Has acabat tots els temes.</b></p>';
+      }
+      $('note').innerHTML='<p>'+n+'</p>';
+      var bn=$('bNextLesson'); if(bn) bn.onclick=function(){ load(cur+1); };
+    }
+    $('bPrev').disabled = k===0 || asking;
+    $('bNext').disabled = k===L.steps.length || asking;
+    $('bPlay').disabled = k===L.steps.length || asking;
+    $('counter').textContent='Pas '+k+' de '+L.steps.length;
+  }
+
+  function ask(){
+    var L=LESSONS[cur], q=L.steps[k].q;
+    asking=true; stop();
+    var box=$('quiz'); box.hidden=false; $('note').innerHTML='';
+    box.innerHTML='<span class="tag">Abans d’executar</span><p class="q">'+esc(q.q)+'</p><div class="opts"></div><div class="verdict"></div>';
+    var opts=box.querySelector('.opts');
+    q.o.forEach(function(text,i){
+      var b=document.createElement('button'); b.type='button'; b.className='opt'; b.textContent=text;
+      b.onclick=function(){
+        answered[k]=true;
+        [].forEach.call(opts.children,function(x,j){ x.disabled=true; if(j===q.ok) x.classList.add('ok'); });
+        if(i!==q.ok) b.classList.add('ko');
+        box.querySelector('.verdict').innerHTML = (i===q.ok?'<b class="ok">Correcte.</b> ':'<b class="ko">No.</b> ')+q.w;
+        asking=false; k++; render();
+        if(!$('bNext').disabled) $('bNext').focus();
+      };
+      opts.appendChild(b);
+    });
+    render();
+  }
+
+  function next(){
+    var L=LESSONS[cur];
+    if(asking || k>=L.steps.length) { stop(); return; }
+    $('quiz').hidden=true;
+    if(L.steps[k].q && !answered[k]){ ask(); return; }
+    k++; render();
+    if(k>=L.steps.length) stop();
+  }
+  function prev(){ if(k>0 && !asking){ k--; $('quiz').hidden=true; stop(); render(); } }
+  function reset(){ stop(); k=0; answered={}; asking=false; $('quiz').hidden=true; render(); }
+  function stop(){ if(timer){ clearInterval(timer); timer=null; } $('bPlay').textContent='Reprodueix'; }
+  function play(){
+    if(timer){ stop(); return; }
+    $('bPlay').textContent='Atura';
+    next();
+    timer=setInterval(function(){ next(); }, 800);
+  }
+  function load(i){ cur=i; renderTabs(); $('ltitle').textContent=LESSONS[i].title; $('lidea').innerHTML=LESSONS[i].idea; reset(); }
+
+  $('bNext').onclick=next; $('bPrev').onclick=prev; $('bReset').onclick=reset; $('bPlay').onclick=play;
+  document.addEventListener('keydown',function(e){
+    if(e.target.tagName==='BUTTON' && (e.key===' '||e.key==='Enter')) return;
+    if(e.key==='ArrowRight') next(); else if(e.key==='ArrowLeft') prev();
+  });
+  load(0);
+}
+</script>
+</body>
+</html>

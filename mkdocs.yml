@@ -1,0 +1,82 @@
+site_name: Circuit · Programació 26-27
+site_description: Apunts de programació en Java (M0485) per a 1r de DAMvi i DAW — Institut Sabadell
+site_author: Clàudia Reina
+site_url: https://programacio-26-27.github.io/
+copyright: Curs 2026-27 · Clàudia Reina · Institut Sabadell
+
+theme:
+  name: material
+  language: ca
+  logo: assets/logo.svg
+  favicon: assets/logo.svg
+  font:
+    text: Atkinson Hyperlegible
+    code: JetBrains Mono
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: custom
+      accent: custom
+      toggle:
+        icon: material/weather-night
+        name: Mode fosc
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: custom
+      accent: custom
+      toggle:
+        icon: material/weather-sunny
+        name: Mode clar
+  features:
+    - navigation.instant
+    - navigation.tracking
+    - navigation.sections
+    - navigation.footer
+    - navigation.top
+    - navigation.indexes
+    - toc.follow
+    - search.highlight
+    - search.suggest
+    - content.code.copy
+    - content.code.annotate
+    - content.tabs.link
+
+# Tot el que hi hagi a docs/esborranys/ NO es publica
+exclude_docs: |
+  esborranys/
+
+extra_css:
+  - stylesheets/circuit.css
+
+nav:
+  - Inici: index.md
+  - El projecte Turbo: turbo/index.md
+  - Etapes:
+      - "01 · Fonaments": etapes/01-fonaments.md
+      - "02 · Arrays": etapes/02-arrays.md
+      - "03 · Strings": etapes/03-strings.md
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - md_in_html
+  - tables
+  - footnotes
+  - def_list
+  - toc:
+      permalink: true
+      title: En aquesta pàgina
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.inlinehilite
+  - pymdownx.keys
+  - pymdownx.mark
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
