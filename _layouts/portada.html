@@ -10,7 +10,6 @@
 <header class="hero">
   <div class="hero-in">
     <img class="hero-icona" src="{{ '/assets/img/icona.svg' | relative_url }}" alt="" width="96" height="96">
-    <p class="hero-marca">{{ site.marca }}</p>
     <h1 class="hero-titol">{{ site.title }}</h1>
     <dl class="hero-dades">
       <div><dt>Professora:</dt><dd>{{ site.professora }}</dd></div>
@@ -54,19 +53,6 @@
   </table>
   <p class="peu-consulta">$1 ==> {{ site.data.blocs | size }} blocs, {{ total }} hores en total</p>
 
-  <section class="fil">
-    <h2 class="blocs-titol">El fil comú: Turbo</h2>
-    <p>Al llarg del curs construïm un mateix projecte: <strong>Turbo</strong>, un joc de curses per consola en Java. A cada tema aprenem un concepte nou i hi afegim una peça.</p>
-    <ol class="fil-etapes">
-      <li><span>Fonaments</span> les dades del pilot i del cotxe</li>
-      <li><span>Condicionals</span> banderes de pista i quan cal entrar a boxes</li>
-      <li><span>Bucles</span> les voltes de la cursa fins que s'acaba el combustible</li>
-      <li><span>Arrays</span> els temps de cada volta i la volta ràpida</li>
-      <li><span>Strings</span> matrícules i abreviatures de pilot</li>
-      <li class="propera"><span>Funcions</span> el programa dividit en peces</li>
-      <li class="propera"><span>Objectes</span> les classes Cotxe, Pilot i Cursa</li>
-    </ol>
-  </section>
 </main>
 
 <footer class="peu">

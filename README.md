@@ -5,13 +5,12 @@ Aquest repo fa dues coses:
 1. Publica la portada a <https://programacio-26-27.github.io/>.
 2. Defineix l'aspecte comú de tots els apunts (carpetes `_layouts`, `_includes` i `assets`). Si canvies el disseny aquí, canvia a totes les BA.
 
-Funciona igual que el de Bases de dades. La marca és **Circuit** (asfalt, vorada vermella i blanca i groc bandera) i el fil comú del curs és el projecte **Turbo**.
+Funciona igual que el de Bases de dades. **Ha de ser públic**: si és privat, les BA no poden carregar el tema i no compilen.
 
 ## Editar la portada
 
 - Nom, curs, mòdul i institut: `_config.yml`.
 - Llista de blocs: `_data/blocs.yml`. Per obrir una BA, posa l'adreça del seu repo a `url` (per exemple `url: /funcions/`). Si `url` està buit, surt com a "Properament". Si `ra` està buit, surt un guió.
-- Les etapes del Turbo de la portada: secció `fil` de `_layouts/portada.html`.
 
 ## Afegir una BA nova
 
@@ -20,41 +19,36 @@ Funciona igual que el de Bases de dades. La marca és **Circuit** (asfalt, vorad
 3. Al repo nou: `Settings > Pages > Deploy from a branch`, branca `main`, carpeta `/ (root)`.
 4. A `_data/blocs.yml` d'aquest repo, posa `url: /funcions/` a la BA corresponent.
 
-## Blocs especials dins dels apunts
+## Elements per als apunts
 
-Fitxa a l'inici d'un tema (llista amb la classe `fitxa`):
+Enllaç al codi de classe, a sota del títol:
 
-```markdown
-- **Tema** 4.1
-- **Al Turbo** temps de volta
-{: .fitxa}
+```html
+<p class="codi-classe"><span class="etiqueta">Codi de classe</span> <a href="URL-DEL-FITXER" target="_blank" rel="noopener">Fitxer.java</a></p>
 ```
 
-"Al Turbo" (groc) i "Repte" (vermell): una cita amb la classe a sota.
-
-```markdown
-> **Al Turbo**
->
-> Text i codi...
-{: .turbo}
-
-> **Repte**
->
-> 1. Exercici
-{: .repte}
-```
-
-Interactiu incrustat (un HTML a la carpeta `interactius/` del repo de la BA). Per a presentacions 16:9, afegeix la classe `diapos`. Posa `ample: true` al front matter perquè ocupi més amplada.
+Simulador pas a pas incrustat. `?tema=3&sol=1` obre només el tema 3, sense pestanyes. Posa `ample: true` al front matter perquè ocupi més amplada. L'alçada s'ajusta sola. Per a presentacions 16:9, afegeix la classe `diapos` al `div`.
 
 ```html
 <div class="interactiu">
   <div class="interactiu-barra">
-    <span class="interactiu-titol">Simulador pas a pas</span>
-    <a class="interactiu-obrir" href="../interactius/arrays.html" target="_blank" rel="noopener">Pantalla completa</a>
+    <span class="interactiu-titol">pas a pas</span>
+    <a class="interactiu-obrir" href="../../interactius/condicionals.html?tema=3" target="_blank" rel="noopener">Pantalla completa</a>
   </div>
-  <iframe src="../interactius/arrays.html" title="Arrays en Java" loading="lazy"></iframe>
+  <iframe src="../../interactius/condicionals.html?tema=3&amp;sol=1" title="else if" loading="lazy"></iframe>
 </div>
 ```
+
+Navegació entre apartats, al final de la pàgina:
+
+```html
+<nav class="passos-nav" aria-label="Apartats">
+  <a class="anterior" href="if-else.html"><small>Anterior</small><strong>2.2 if else</strong></a>
+  <a class="seguent" href="condicions-compostes.html"><small>Següent</small><strong>2.4 Condicions compostes</strong></a>
+</nav>
+```
+
+A la BA1, totes aquestes pàgines es generen amb `eines/genera_pagines.py`.
 
 ## Consells per als fitxers .md
 
